@@ -1,0 +1,1004 @@
+How I Turned Claude Into My Personal Assistant (Full Guide)
+Jun 26, 2026, 7:50 AM • undefined
+
+SPEAKERS
+
+
+------------------------------------------------------------------------------------
+
+undefined • 0
+I spent two weeks building a custom
+
+undefined • 00:02
+personal operating system which runs my
+
+undefined • 00:05
+life. It manages all my tasks, finances,
+
+undefined • 00:08
+calendar, and automatically prioritizes
+
+undefined • 00:10
+my day based on the things that matter.
+
+undefined • 00:12
+It allows me to send voice notes from
+
+undefined • 00:14
+anywhere and have AI automatically
+
+undefined • 00:16
+populate my to-do list instead of what I
+
+undefined • 00:18
+used to do which was going into notion
+
+undefined • 00:20
+and having to manually log everything.
+
+undefined • 00:21
+And for me, that system just didn't
+
+undefined • 00:23
+work. Needing to constantly remember to
+
+undefined • 00:24
+go into notion and write something meant
+
+undefined • 00:26
+that things weren't getting logged, so
+
+undefined • 00:28
+things were getting missed. I had deals
+
+undefined • 00:30
+falling through, for example, an
+
+undefined • 00:31
+opportunity to invest in Anthropic, the
+
+undefined • 00:33
+creators of Claude, in May 2025, which
+
+undefined • 00:36
+ended up costing me over $1.2 million in
+
+undefined • 00:39
+opportunity cost because I just wasn't
+
+undefined • 00:41
+organized. So, I knew I needed to do
+
+undefined • 00:42
+something once and for all. So, over the
+
+undefined • 00:44
+past couple of weeks, I really spent the
+
+undefined • 00:46
+time to create the best operating system
+
+undefined • 00:48
+I could. And I've got to say, this has
+
+undefined • 00:50
+been by far the biggest upgrade that I
+
+undefined • 00:52
+have ever made to my life using AI. It
+
+undefined • 00:55
+has a custom cloud memory system, so it
+
+undefined • 00:57
+remembers everything about me. That
+
+undefined • 00:59
+memory system can be transported into
+
+undefined • 01:01
+any LLM, and I can constantly update the
+
+undefined • 01:03
+front end based on my interests and
+
+undefined • 01:05
+priorities, whilst the back end stores
+
+undefined • 01:08
+all the data. I truly believe when
+
+undefined • 01:09
+moving away from the SaaS era, the era
+
+undefined • 01:12
+where you pay a subscription to use a
+
+undefined • 01:13
+tool which is built for everyone, and
+
+undefined • 01:16
+into an era of purpose-built tools, an
+
+undefined • 01:18
+exact dashboard that matches your
+
+undefined • 01:20
+specific pain points. And today, I'm
+
+undefined • 01:22
+going to show you how I built mine and
+
+undefined • 01:23
+how you can build your very own. So, if
+
+undefined • 01:25
+you don't know who I am, my name is
+
+undefined • 01:27
+Miles Deutscher, the founder of AI Edge.
+
+undefined • 01:29
+I've scaled my AI agency to over $20
+
+undefined • 01:31
+million in revenue. I've sold over $5.5
+
+undefined • 01:33
+million of digital products, and I
+
+undefined • 01:35
+created this channel to help you achieve
+
+undefined • 01:37
+your goals with AI just as I've been
+
+undefined • 01:38
+able to achieve some of mine with this
+
+undefined • 01:40
+incredible new technology. So, if you
+
+undefined • 01:42
+enjoy content like this, make sure you
+
+undefined • 01:44
+click that subscribe button so you don't
+
+undefined • 01:45
+miss a single video. Now, before I show
+
+undefined • 01:47
+you how I built the OS from scratch, let
+
+undefined • 01:50
+me quickly show you some of the things
+
+undefined • 01:52
+that it can do. And then at the end of
+
+undefined • 01:53
+the video, I'll give you a full
+
+undefined • 01:55
+walk-through as to how I've laid out my
+
+undefined • 01:57
+dashboard. All right, so firstly, and
+
+undefined • 01:59
+this is probably the coolest part about
+
+undefined • 02:01
+it and it solved the biggest pain points
+
+undefined • 02:02
+that other task management systems like
+
+undefined • 02:04
+Notion couldn't solve, I can voice note
+
+undefined • 02:06
+from anywhere. So, I have a Telegram
+
+undefined • 02:07
+chat where I can send it a voice note
+
+undefined • 02:10
+when a new task comes up. So, let's say
+
+undefined • 02:11
+in my head I remember, "Oh, I have a new
+
+undefined • 02:13
+proposal to send a client." I can simply
+
+undefined • 02:15
+just open up Telegram, which I've
+
+undefined • 02:17
+conveniently made the action button on
+
+undefined • 02:18
+my phone, so I can just click a button,
+
+undefined • 02:20
+it opens up Telegram and I just voice
+
+undefined • 02:22
+note exactly what I want to log into the
+
+undefined • 02:24
+CRM system. Then, I've configured a
+
+undefined • 02:26
+back-end memory system where that is
+
+undefined • 02:28
+sent to the cloud through Whisper. It
+
+undefined • 02:30
+connects to my memory database on
+
+undefined • 02:31
+Superbase. The AI automatically
+
+undefined • 02:33
+categorizes it in terms of priority and
+
+undefined • 02:36
+it populates it on the dashboard. So,
+
+undefined • 02:38
+the dashboard is the front-end
+
+undefined • 02:40
+reflecting the memory system in the
+
+undefined • 02:41
+back-end. So, whenever I have an idea, a
+
+undefined • 02:43
+thought, something I need to do, I
+
+undefined • 02:45
+simply paste it or voice prompt into
+
+undefined • 02:47
+Telegram and it automatically updates
+
+undefined • 02:50
+and prioritizes my task management
+
+undefined • 02:51
+system. If you don't have a system like
+
+undefined • 02:53
+this, you're literally reliant on
+
+undefined • 02:55
+opening up the Notion app or opening up
+
+undefined • 02:57
+your Apple notes or wherever you store
+
+undefined • 02:58
+tasks, writing it in manually, and then
+
+undefined • 03:00
+you have to click and drag and manually
+
+undefined • 03:02
+reorder things when you want to sort by
+
+undefined • 03:04
+priority. That wasn't working for me
+
+undefined • 03:05
+because then my to-do list just ended up
+
+undefined • 03:07
+being a 200 long list that I would never
+
+undefined • 03:10
+get to because new things would go to
+
+undefined • 03:12
+the top and then I'd forget other
+
+undefined • 03:13
+things. This way, things are always
+
+undefined • 03:15
+organized automatically by the AI. The
+
+undefined • 03:17
+next thing that was a real pain point
+
+undefined • 03:18
+for me was finances because I used to
+
+undefined • 03:20
+have my finances all over the place. I
+
+undefined • 03:22
+had bank accounts, I had exchanges, I
+
+undefined • 03:24
+had other documents all over the place.
+
+undefined • 03:26
+So, what I did is I created a Google
+
+undefined • 03:28
+Sheet with an API to pull in the data
+
+undefined • 03:30
+live that reflects on the dashboard. So,
+
+undefined • 03:33
+on the dashboard I can see at any moment
+
+undefined • 03:35
+in time what my exact net worth is. Now,
+
+undefined • 03:37
+of course, the data I'm showing you in
+
+undefined • 03:38
+today's video has been slightly changed
+
+undefined • 03:40
+so you don't see the real numbers, but
+
+undefined • 03:42
+it's exactly how my real dashboard
+
+undefined • 03:44
+looks. So, I'm going to walk you through
+
+undefined • 03:45
+the whole thing, but firstly, let's go
+
+undefined • 03:47
+through step by step how I actually
+
+undefined • 03:48
+built it because this is the real
+
+undefined • 03:50
+source. All right, so the first thing I
+
+undefined • 03:52
+did is mock the entire design in Claude
+
+undefined • 03:54
+design. So, before I committed to the
+
+undefined • 03:56
+full build on Claude code, I wanted to
+
+undefined • 03:57
+see exactly how it would look. I
+
+undefined • 03:59
+honestly spent way too long on this
+
+undefined • 04:01
+going through all the mocks for all the
+
+undefined • 04:03
+different sections, but I think it came
+
+undefined • 04:04
+out super cool. And my plan is to make
+
+undefined • 04:06
+it better over time. So, once I was
+
+undefined • 04:08
+happy with the design, I exported it
+
+undefined • 04:10
+into Claude code. This is how you
+
+undefined • 04:12
+actually take it from a design into a
+
+undefined • 04:14
+functional website. And I got Claude
+
+undefined • 04:16
+code to mock the entire architecture,
+
+undefined • 04:18
+which will be available for you to claim
+
+undefined • 04:20
+for free below. If you click the link in
+
+undefined • 04:21
+the description, become a member of the
+
+undefined • 04:23
+AI Edge newsletter, you'll get access to
+
+undefined • 04:25
+our Instagram community. Or in the pin
+
+undefined • 04:26
+drive, you'll be able to find the full
+
+undefined • 04:28
+architecture. And then you can take that
+
+undefined • 04:29
+PDF, put it into Claude code yourself,
+
+undefined • 04:31
+and it will run you through the exact
+
+undefined • 04:33
+steps. Because it took me days to figure
+
+undefined • 04:35
+out the exact architecture for this and
+
+undefined • 04:36
+many, many mistakes. So, hopefully, it's
+
+undefined • 04:38
+able to save you time when you build
+
+undefined • 04:39
+your own. So, the next step for me was
+
+undefined • 04:41
+to pick a memory system. I decided to go
+
+undefined • 04:42
+with Superbase. You also have Firebase
+
+undefined • 04:44
+and other solutions, Super memory as
+
+undefined • 04:46
+well, but Superbase was the most
+
+undefined • 04:47
+sovereign configuration. Lots of big
+
+undefined • 04:50
+applications use it. It's basically the
+
+undefined • 04:51
+brain behind everything. So, all the
+
+undefined • 04:53
+data gets stored and logged on
+
+undefined • 04:54
+Superbase, and then the interface is how
+
+undefined • 04:56
+you interact with that memory. Then I
+
+undefined • 04:58
+needed to go to Anthropic, get an API
+
+undefined • 05:00
+key, because I built this on Claude. I
+
+undefined • 05:03
+actually think you could build this on
+
+undefined • 05:04
+Codex. The only reason I built it on
+
+undefined • 05:05
+Claude is cuz I started this build
+
+undefined • 05:07
+before 5.5 was released. But if you're
+
+undefined • 05:09
+building today, you can do this exact
+
+undefined • 05:11
+same thing on ChatGPT. And to be honest,
+
+undefined • 05:13
+I think it would do a better job. And
+
+undefined • 05:15
+you can still import the Claude design.
+
+undefined • 05:16
+The next thing I did is I wrote the
+
+undefined • 05:17
+schema, so exactly what I wanted in
+
+undefined • 05:20
+there, content, products, business ops,
+
+undefined • 05:21
+business finance, etc. This is going to
+
+undefined • 05:23
+be completely custom to you, but my
+
+undefined • 05:25
+build is what I wanted. Then, I wanted a
+
+undefined • 05:27
+way to log my tasks via voice prompting
+
+undefined • 05:30
+when I wasn't on my computer. So, I
+
+undefined • 05:31
+decided to connect Telegram, which was
+
+undefined • 05:33
+really easy, because I just set up a
+
+undefined • 05:34
+Telegram bot through Bot Father. I
+
+undefined • 05:36
+pointed its webhook at the Versal
+
+undefined • 05:38
+function through Claude code, and now
+
+undefined • 05:39
+basically all my voice notes get
+
+undefined • 05:41
+transcribed by OpenAI Whisper. So,
+
+undefined • 05:43
+Claude can read the text and classify it
+
+undefined • 05:45
+into the corresponding category and log
+
+undefined • 05:47
+it on Superbase. This is absolutely
+
+undefined • 05:48
+amazing. Then I worked on some security
+
+undefined • 05:50
+stuff to make sure it was password
+
+undefined • 05:51
+protected before I moved on to the
+
+undefined • 05:53
+actual component. So, first I did the
+
+undefined • 05:55
+calendar. I basically connected Google
+
+undefined • 05:57
+Calendar so it refreshes live. Then I
+
+undefined • 05:59
+built the habit tracking. This is pretty
+
+undefined • 06:01
+simple. Whenever you check all of the
+
+undefined • 06:02
+boxes under a drop down, it ticks off a
+
+undefined • 06:04
+task for the day. Then added the
+
+undefined • 06:06
+journaling function, then added the CRM,
+
+undefined • 06:08
+which was by far the hardest part
+
+undefined • 06:09
+because I just had so many glitches
+
+undefined • 06:11
+which were honestly really frustrating
+
+undefined • 06:13
+where, you know, I'd refresh, data
+
+undefined • 06:14
+wouldn't log, and things were getting
+
+undefined • 06:16
+lost. So, I had to go through multiple
+
+undefined • 06:17
+debugging stages to make sure it
+
+undefined • 06:19
+actually worked. So, just keep this in
+
+undefined • 06:20
+mind if you're going to build this
+
+undefined • 06:21
+yourself, you might get some bugs, and I
+
+undefined • 06:23
+spent hours doing this. The entire build
+
+undefined • 06:25
+took me a couple of weeks. So, this was
+
+undefined • 06:26
+over a few different days. Then I added
+
+undefined • 06:28
+nutrition, which I also had to rebuild a
+
+undefined • 06:30
+few times because the data wasn't
+
+undefined • 06:31
+logging properly, but now it's pretty
+
+undefined • 06:33
+good, and it's actually connected to a
+
+undefined • 06:35
+smart AI algorithm which can estimate
+
+undefined • 06:37
+the calories of a particular meal. Added
+
+undefined • 06:39
+the health tab corresponding to the
+
+undefined • 06:40
+data. Added the goals section so I could
+
+undefined • 06:43
+see my goals, and then I created the
+
+undefined • 06:45
+finance section. The finance section I
+
+undefined • 06:47
+had to connect to a Google Sheet, which
+
+undefined • 06:49
+I'm going to do a future video on
+
+undefined • 06:50
+finances more in depth because it
+
+undefined • 06:52
+deserves its own video. And then for the
+
+undefined • 06:53
+last couple of days, I basically just
+
+undefined • 06:55
+used it, and every single time I noticed
+
+undefined • 06:57
+a feature that I wanted added, I added
+
+undefined • 06:59
+it. And every single time there was an
+
+undefined • 07:00
+issue with the feature, I got it fixed.
+
+undefined • 07:02
+So, this is really a process of trial
+
+undefined • 07:04
+and error. The sooner you start using
+
+undefined • 07:05
+it, the sooner you'll realize things
+
+undefined • 07:07
+that you want to tweak. All right, so
+
+undefined • 07:08
+now you know how I built it. Here is the
+
+undefined • 07:10
+dashboard. I'm going to give you a full
+
+undefined • 07:11
+run through, and then I'm going to show
+
+undefined • 07:13
+you some examples of how I use it. In
+
+undefined • 07:14
+the top left, it's got me. I'm the
+
+undefined • 07:15
+operator, obviously for you, it'll have
+
+undefined • 07:17
+your own name. One block down, it has a
+
+undefined • 07:19
+finance pulse. It's actually hidden by
+
+undefined • 07:21
+default, so if you leave your computer
+
+undefined • 07:22
+open, you're not going to leak your
+
+undefined • 07:23
+network to someone. But when you want to
+
+undefined • 07:24
+review it, you can click reveal. This
+
+undefined • 07:26
+tracks my net worth over time, how much
+
+undefined • 07:28
+I've made in the month, how much I've
+
+undefined • 07:30
+made on the day, and what my current net
+
+undefined • 07:31
+worth is, and this is connected to all
+
+undefined • 07:33
+of the data on the back end. Then down
+
+undefined • 07:35
+here, I have key tasks. These are the
+
+undefined • 07:37
+tasks that I've starred and flagged as
+
+undefined • 07:40
+key priorities for the day. Really,
+
+undefined • 07:41
+productivity a lot of the time just
+
+undefined • 07:43
+comes down to identifying the top task
+
+undefined • 07:46
+for the day and making sure you get
+
+undefined • 07:47
+those tasks done. So, what I do every
+
+undefined • 07:48
+morning is I go through the CRM section
+
+undefined • 07:50
+of the dashboard, and then I simply
+
+undefined • 07:52
+select I star the three to five things I
+
+undefined • 07:55
+want to get done every day. And then if
+
+undefined • 07:57
+you go back into the home section, these
+
+undefined • 07:59
+are marked down as key items. So, these
+
+undefined • 08:01
+are the things that I need to complete
+
+undefined • 08:02
+as priorities every day. And obviously,
+
+undefined • 08:04
+once I complete them, then I can go and
+
+undefined • 08:05
+add new tasks in, but this gives me a
+
+undefined • 08:08
+bit of a pulse on the main things that I
+
+undefined • 08:10
+need to hit. Now, in the middle, this is
+
+undefined • 08:12
+a really powerful system and maybe you
+
+undefined • 08:13
+watch my other habit tracker video. This
+
+undefined • 08:15
+is the next step further from that. I
+
+undefined • 08:17
+have my daily habits. So, these are the
+
+undefined • 08:19
+things that aside from the main
+
+undefined • 08:20
+priorities I want to get done, I need to
+
+undefined • 08:22
+do every day. So, there are a few habits
+
+undefined • 08:24
+that I like doing. For example, I need
+
+undefined • 08:25
+to go to the gym every day to feel good.
+
+undefined • 08:27
+So, once it's done, I tick it off. Then,
+
+undefined • 08:29
+I need to remember to take my
+
+undefined • 08:30
+supplements. This just takes the brain
+
+undefined • 08:32
+power out of needing to remember to do
+
+undefined • 08:33
+things. I've actually changed the data
+
+undefined • 08:35
+cuz I didn't want to reveal my personal
+
+undefined • 08:37
+data, but you'd list basically every
+
+undefined • 08:39
+single one of your sub supplements here
+
+undefined • 08:40
+and you would tick it off like this, 1 2
+
+undefined • 08:42
+3. When you tick off all the sub tasks,
+
+undefined • 08:43
+the main task gets completed and it
+
+undefined • 08:45
+shows you the percentage of your habits
+
+undefined • 08:47
+that you've completed for the day. The
+
+undefined • 08:48
+next thing that's really important for
+
+undefined • 08:50
+me is my creative session. So, I have a
+
+undefined • 08:52
+process I follow every day in the
+
+undefined • 08:54
+morning where I go through X, I do
+
+undefined • 08:56
+market research, and then I come up with
+
+undefined • 08:57
+ideas. I find it's really important to
+
+undefined • 08:59
+be creative in the morning. So, once I
+
+undefined • 09:01
+tick off all the sub tasks, then the
+
+undefined • 09:03
+creative session gets complete. Then I
+
+undefined • 09:05
+move on to a community session to engage
+
+undefined • 09:07
+with my community. Then I move on to a
+
+undefined • 09:08
+finance check. Well, have a few things
+
+undefined • 09:11
+that I tick off like run through my
+
+undefined • 09:12
+portfolio, quickly look for risks, go
+
+undefined • 09:14
+through the finance section of the
+
+undefined • 09:15
+dashboard, and then finally I have an
+
+undefined • 09:17
+evening wind down routine. Now, in the
+
+undefined • 09:19
+wind down routine, this is really cool.
+
+undefined • 09:21
+There's actually a journaling feature,
+
+undefined • 09:22
+and you can do this through the Telegram
+
+undefined • 09:24
+interface as well. But if you click the
+
+undefined • 09:25
+microphone, you can actually just speak
+
+undefined • 09:27
+what happened in the day. So, I
+
+undefined • 09:27
+basically say, "I had a good day. I did
+
+undefined • 09:29
+this, this, and this. This is where I
+
+undefined • 09:31
+struggled. This is where I did well.
+
+undefined • 09:33
+These are the reasons why. This is how
+
+undefined • 09:34
+the business is going." And this is
+
+undefined • 09:36
+actually really powerful because
+
+undefined • 09:38
+remember, all of this data is being
+
+undefined • 09:39
+saved in the back end. So, by doing
+
+undefined • 09:41
+this, I essentially I'm training the AI
+
+undefined • 09:44
+every single day on how I think. So, if
+
+undefined • 09:46
+you go to the journaling section where
+
+undefined • 09:48
+all of this is logged, it has a summary
+
+undefined • 09:50
+of every single day. And if you click
+
+undefined • 09:52
+show raw, it shows the full transcript
+
+undefined • 09:55
+that you left for that day. So, imagine
+
+undefined • 09:57
+after a year of doing this, you have a
+
+undefined • 09:58
+year worth of logs. The AI is really
+
