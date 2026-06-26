@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tony OS">
+<title>Tony OS</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --card: #1c1c1c;
+    --border: #2a2a2a;
+    --text: #f0f0f0;
+    --muted: #888;
+    --accent: #6c63ff;
+    --accent-soft: #2a2660;
+    --green: #22c55e;
+    --green-soft: #0f2a1a;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --amber-soft: #2a1f08;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+    padding-bottom: 90px;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 52px 20px 16px;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .greeting { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .greeting span { color: var(--accent); }
+  .date-badge {
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--card);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    padding: 12px 20px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .tab.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  /* PAGES */
+  .page { display: none; padding: 20px; }
+  .page.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .card-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  /* VOICE BUTTON */
+  .voice-section {
+    text-align: center;
+    padding: 8px 0 20px;
+  }
+  .voice-btn {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    transition: transform 0.1s, box-shadow 0.2s;
+    box-shadow: 0 0 0 0 rgba(108,99,255,0.4);
+  }
+  .voice-btn:active { transform: scale(0.93); }
+  .voice-btn.recording {
+    animation: pulse 1.2s infinite;
+    background: var(--red);
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
+    70% { box-shadow: 0 0 0 18px rgba(239,68,68,0); }
+    100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+  }
+  .voice-btn svg { width: 32px; height: 32px; }
+  .voice-hint { font-size: 13px; color: var(--muted); }
+  .voice-hint strong { color: var(--text); }
+
+  /* TRANSCRIPT BOX */
+  .transcript-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 56px;
+    color: var(--text);
+    margin-bottom: 10px;
+    display: none;
+  }
+  .transcript-box.visible { display: block; }
+
+  /* CATEGORY PILLS */
+  .cat-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .cat-pill {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+  .cat-pill.active { color: white; border-color: transparent; }
+  .cat-pill[data-cat="callback"].active { background: var(--amber); }
+  .cat-pill[data-cat="movatera"].active { background: var(--accent); }
+  .cat-pill[data-cat="vois"].active { background: #0ea5e9; }
+  .cat-pill[data-cat="personal"].active { background: var(--green); }
+  .cat-pill[data-cat="gym"].active { background: #f97316; }
+  .cat-pill[data-cat="youtube"].active { background: #ef4444; }
+
+  /* SAVE BUTTON */
+  .save-btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    display: none;
+  }
+  .save-btn.visible { display: block; }
+  .save-btn:active { opacity: 0.8; }
+
+  /* TASK ITEMS */
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    margin-top: 1px;
+  }
+  .task-check.done {
+    background: var(--green);
+    border-color: var(--green);
+  }
+  .task-check.done::after {
+    content: '';
+    width: 6px;
+    height: 10px;
+    border: 2px solid white;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg) translate(-1px,-1px);
+  }
+  .task-body { flex: 1; }
+  .task-text {
+    font-size: 14px;
+    line-height: 1.4;
+    transition: opacity 0.15s;
+  }
+  .task-text.done { opacity: 0.4; text-decoration: line-through; }
+  .task-meta {
+    display: flex;
+    gap: 6px;
+    margin-top: 5px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+  .tag-callback { background: var(--amber-soft); color: var(--amber); }
+  .tag-movatera { background: var(--accent-soft); color: #a5a0ff; }
+  .tag-vois { background: #0c2233; color: #38bdf8; }
+  .tag-personal { background: var(--green-soft); color: var(--green); }
+  .tag-gym { background: #2a1200; color: #f97316; }
+  .tag-youtube { background: #2a0a0a; color: #f87171; }
+  .task-date { font-size: 11px; color: var(--muted); }
+  .task-delete {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 4px;
+    line-height: 1;
+    transition: color 0.15s;
+    flex-shrink: 0;
+  }
+  .task-delete:hover { color: var(--red); }
+
+  /* EMPTY STATE */
+  .empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .empty-icon { font-size: 36px; margin-bottom: 10px; }
+
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .filter-btn {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .filter-btn.active {
+    background: var(--card);
+    color: var(--text);
+    border-color: var(--border);
+  }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    text-align: center;
+  }
+  .stat-num { font-size: 22px; font-weight: 700; }
+  .stat-label { font-size: 10px; color: var(--muted); margin-top: 2px; letter-spacing: 0.5px; }
+  .stat-num.green { color: var(--green); }
+  .stat-num.amber { color: var(--amber); }
+  .stat-num.accent { color: var(--accent); }
+
+  /* HABIT TRACKER */
+  .habit-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .habit-row:last-child { border-bottom: none; }
+  .habit-name { font-size: 14px; font-weight: 500; }
+  .habit-streak { font-size: 12px; color: var(--amber); margin-top: 2px; }
+  .habit-toggle {
+    width: 48px;
+    height: 26px;
+    background: var(--border);
+    border-radius: 13px;
+    position: relative;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .habit-toggle.on { background: var(--green); }
+  .habit-toggle::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    top: 3px;
+    left: 3px;
+    transition: left 0.2s;
+  }
+  .habit-toggle.on::after { left: 25px; }
+
+  /* AI CHAT */
+  .chat-messages {
+    min-height: 200px;
+    max-height: 380px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    scrollbar-width: none;
+  }
+  .chat-messages::-webkit-scrollbar { display: none; }
+  .msg {
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 88%;
+  }
+  .msg.user {
+    background: var(--accent);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .msg.ai {
+    background: var(--surface);
+    color: var(--text);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .msg.ai.loading { color: var(--muted); font-style: italic; }
+  .chat-input-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  .chat-input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 14px;
+    padding: 10px 14px;
+    resize: none;
+    outline: none;
+    font-family: inherit;
+    min-height: 42px;
+    max-height: 100px;
+  }
+  .chat-input:focus { border-color: var(--accent); }
+  .chat-send {
+    width: 42px;
+    height: 42px;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: opacity 0.15s;
+  }
+  .chat-send:active { opacity: 0.7; }
+  .chat-send svg { width: 18px; height: 18px; }
+
+  /* NOTION SETUP */
+  .step-item {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .step-item:last-child { border-bottom: none; }
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .step-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .step-desc code {
+    background: var(--surface);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--amber);
+  }
+
+  /* NOTION KEY INPUT */
+  .key-input-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .key-input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 13px;
+    padding: 10px 12px;
+    outline: none;
+    font-family: monospace;
+  }
+  .key-input:focus { border-color: var(--accent); }
+  .key-save-btn {
+    padding: 10px 16px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* STATUS PILL */
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    margin-top: 8px;
+  }
+  .status-pill.connected { background: var(--green-soft); color: var(--green); }
+  .status-pill.disconnected { background: #2a0a0a; color: var(--red); }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 10px 0 20px;
+    z-index: 200;
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 0;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .nav-item.active { color: var(--accent); }
+  .nav-item svg { width: 22px; height: 22px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-80px);
+    background: var(--green);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 999;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+
+  /* NOTION DB ID INPUT */
+  .db-section { margin-top: 16px; }
+  .db-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="header">
+  <div class="header-top">
+    <div class="greeting">Hey <span>Tony</span> 👋</div>
+    <div class="date-badge" id="dateBadge"></div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchPage('log')">Log</button>
+    <button class="tab" onclick="switchPage('tasks')">Tasks</button>
+    <button class="tab" onclick="switchPage('habits')">Habits</button>
+    <button class="tab" onclick="switchPage('chat')">Ask AI</button>
+    <button class="tab" onclick="switchPage('setup')">Setup</button>
+  </div>
+</div>
+
+<!-- PAGE: LOG -->
+<div class="page active" id="page-log">
+
+  <div class="voice-section">
+    <button class="voice-btn" id="voiceBtn" onclick="toggleRecording()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+        <line x1="12" y1="19" x2="12" y2="23"/>
+        <line x1="8" y1="23" x2="16" y2="23"/>
+      </svg>
+    </button>
+    <div class="voice-hint" id="voiceHint"><strong>Hold to speak</strong> — tap to start/stop</div>
+  </div>
+
+  <div class="transcript-box" id="transcriptBox"></div>
+
+  <div class="card" id="catCard" style="display:none;">
+    <div class="card-label">Category</div>
+    <div class="cat-pills">
+      <button class="cat-pill active" data-cat="callback" onclick="selectCat(this)">📞 Callback</button>
+      <button class="cat-pill" data-cat="movatera" onclick="selectCat(this)">🚀 Movatera</button>
+      <button class="cat-pill" data-cat="vois" onclick="selectCat(this)">💼 VOIS</button>
+      <button class="cat-pill" data-cat="personal" onclick="selectCat(this)">🧠 Personal</button>
+      <button class="cat-pill" data-cat="gym" onclick="selectCat(this)">💪 Gym</button>
+      <button class="cat-pill" data-cat="youtube" onclick="selectCat(this)">🎬 YouTube</button>
+    </div>
+    <button class="save-btn visible" id="saveBtn" onclick="saveTask()">Save Task</button>
+  </div>
+
+  <!-- OR TYPE IT -->
+  <div class="card">
+    <div class="card-label">Or type it</div>
+    <textarea id="manualInput" class="chat-input" style="width:100%;margin-bottom:10px;" rows="2" placeholder="e.g. Call back John from Underground Gym tomorrow 3pm..."></textarea>
+    <div class="cat-pills" style="margin-bottom:10px;">
+      <button class="cat-pill active" data-cat="callback" onclick="selectManualCat(this)">📞 Callback</button>
+      <button class="cat-pill" data-cat="movatera" onclick="selectManualCat(this)">🚀 Movatera</button>
+      <button class="cat-pill" data-cat="vois" onclick="selectManualCat(this)">💼 VOIS</button>
+      <button class="cat-pill" data-cat="personal" onclick="selectManualCat(this)">🧠 Personal</button>
+      <button class="cat-pill" data-cat="gym" onclick="selectManualCat(this)">💪 Gym</button>
+      <button class="cat-pill" data-cat="youtube" onclick="selectManualCat(this)">🎬 YouTube</button>
+    </div>
+    <button class="save-btn visible" onclick="saveManualTask()">Save Task</button>
+  </div>
+
+</div>
+
+<!-- PAGE: TASKS -->
+<div class="page" id="page-tasks">
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num accent" id="statTotal">0</div>
+      <div class="stat-label">Total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num amber" id="statPending">0</div>
+      <div class="stat-label">Pending</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num green" id="statDone">0</div>
+      <div class="stat-label">Done</div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterTasks('all', this)">All</button>
+    <button class="filter-btn" onclick="filterTasks('callback', this)">📞 Callbacks</button>
+    <button class="filter-btn" onclick="filterTasks('movatera', this)">🚀 Movatera</button>
+    <button class="filter-btn" onclick="filterTasks('vois', this)">💼 VOIS</button>
+    <button class="filter-btn" onclick="filterTasks('gym', this)">💪 Gym</button>
+    <button class="filter-btn" onclick="filterTasks('personal', this)">🧠 Personal</button>
+  </div>
+
+  <div class="card">
+    <div id="taskList"></div>
+  </div>
+</div>
+
+<!-- PAGE: HABITS -->
+<div class="page" id="page-habits">
+  <div class="card">
+    <div class="card-label">Today's habits</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="habitProgress" style="width:0%"></div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px;margin-bottom:14px;" id="habitProgressText">0 / 6 complete</div>
+    <div id="habitList"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Add habit</div>
+    <div style="display:flex;gap:8px;">
+      <input id="newHabit" class="chat-input" style="flex:1;" placeholder="e.g. Read 20 pages" />
+      <button onclick="addHabit()" style="padding:10px 14px;background:var(--accent);border:none;border-radius:var(--radius-sm);color:white;font-weight:600;cursor:pointer;font-size:14px;">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: CHAT -->
+<div class="page" id="page-chat">
+  <div class="card" style="padding:12px;">
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg ai">Hey Tony. I know everything about you — Movatera, Referrizer, VOIS, gym, YouTube, all of it. Ask me anything or tell me what to help you with.</div>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chatInput" placeholder="Ask me anything..." rows="1" onkeydown="handleChatKey(event)"></textarea>
+      <button class="chat-send" onclick="sendChat()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: SETUP -->
+<div class="page" id="page-setup">
+  <div class="card">
+    <div class="card-label">Notion connection</div>
+    <div id="notionStatus" class="status-pill disconnected">
+      <div class="status-dot"></div> Not connected
+    </div>
+    <div style="margin-top:14px;font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px;">
+      Paste your Notion API key below. This stays on your phone only — never sent anywhere.
+    </div>
+    <div class="key-input-row">
+      <input type="password" id="notionKey" class="key-input" placeholder="secret_xxx..." />
+      <button class="key-save-btn" onclick="saveNotionKey()">Save</button>
+    </div>
+    <div class="db-section">
+      <div class="db-label">Notion Database ID (Tasks DB)</div>
+      <div class="key-input-row">
+        <input type="text" id="notionDbId" class="key-input" placeholder="32-char database ID..." />
+        <button class="key-save-btn" onclick="saveDbId()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Setup guide — read this first</div>
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Create a Notion account</div>
+        <div class="step-desc">Go to <code>notion.so</code> and sign up for free. It's like a smart notebook.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Create a new database</div>
+        <div class="step-desc">In Notion, click <code>+ New page</code> → choose <code>Table</code>. Name it <code>Tony Tasks</code>. Add columns: <code>Name</code> (title), <code>Category</code> (select), <code>Date</code> (date), <code>Done</code> (checkbox), <code>Notes</code> (text).</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Get your Notion API key</div>
+        <div class="step-desc">Go to <code>notion.so/my-integrations</code> → click <code>New integration</code> → name it <code>TonyOS</code> → copy the key that starts with <code>secret_</code></div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">Connect the database to your integration</div>
+        <div class="step-desc">Open your Tony Tasks database in Notion → click the <code>...</code> menu top right → <code>Add connections</code> → find <code>TonyOS</code> and connect it.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">5</div>
+      <div>
+        <div class="step-title">Get your Database ID</div>
+        <div class="step-desc">Open Tony Tasks in your browser. The URL looks like: <code>notion.so/abc123.../YOUR-ID-HERE?v=...</code>. Copy the 32-character ID between the last <code>/</code> and the <code>?</code>.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">6</div>
+      <div>
+        <div class="step-title">Paste both above and save</div>
+        <div class="step-desc">Put the <code>secret_</code> key and the database ID in the fields above. Done. Every task you log here will appear in your Notion automatically.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">7</div>
+      <div>
+        <div class="step-title">Add to your phone home screen</div>
+        <div class="step-desc">In Safari (iPhone) or Chrome (Android): tap the share button → <code>Add to Home Screen</code>. It will look like an app. One tap access, always.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-item active" id="nav-log" onclick="switchPage('log')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    Log
+  </button>
+  <button class="nav-item" id="nav-tasks" onclick="switchPage('tasks')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    Tasks
+  </button>
+  <button class="nav-item" id="nav-habits" onclick="switchPage('habits')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+    Habits
+  </button>
+  <button class="nav-item" id="nav-chat" onclick="switchPage('chat')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Ask AI
+  </button>
+  <button class="nav-item" id="nav-setup" onclick="switchPage('setup')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 19.07l1.41-1.41M21 12h-2M3 12H1M19.07 19.07l-1.41-1.41M4.93 4.93l1.41 1.41M12 21v-2M12 3V1"/></svg>
+    Setup
+  </button>
+</div>
+
+<script>
+// STATE
+let tasks = JSON.parse(localStorage.getItem('tony_tasks') || '[]');
+let habits = JSON.parse(localStorage.getItem('tony_habits') || JSON.stringify([
+  { id: 1, name: 'Gym / Boxing', done: false, emoji: '💪' },
+  { id: 2, name: 'Run by the sea', done: false, emoji: '🏃' },
+  { id: 3, name: 'Read (20 pages)', done: false, emoji: '📚' },
+  { id: 4, name: 'Cold calls', done: false, emoji: '📞' },
+  { id: 5, name: 'Movatera task', done: false, emoji: '🚀' },
+  { id: 6, name: 'No junk content', done: false, emoji: '🧠' }
+]));
+let chatHistory = [];
+let selectedCat = 'callback';
+let selectedManualCat = 'callback';
+let currentFilter = 'all';
+let isRecording = false;
+let recognition = null;
+let currentTranscript = '';
+let notionKey = localStorage.getItem('tony_notion_key') || '';
+let notionDbId = localStorage.getItem('tony_notion_db') || '';
+
+// INIT
+document.getElementById('dateBadge').textContent = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+if (notionKey) document.getElementById('notionKey').value = notionKey;
+if (notionDbId) document.getElementById('notionDbId').value = notionDbId;
+updateNotionStatus();
+renderTasks();
+renderHabits();
+updateStats();
+checkHabitDay();
+
+// NAV
+function switchPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('nav-' + page).classList.add('active');
+  const tabs = ['log','tasks','habits','chat','setup'];
+  const tabIdx = tabs.indexOf(page);
+  document.querySelectorAll('.tab')[tabIdx].classList.add('active');
+  if (page === 'tasks') { renderTasks(); updateStats(); }
+  if (page === 'habits') renderHabits();
+}
+
+// VOICE
+function toggleRecording() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast('Voice not supported on this browser. Use Chrome.', true);
+    return;
+  }
+  if (isRecording) { stopRecording(); return; }
+  startRecording();
+}
+
+function startRecording() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = 'en-US';
+  recognition.onresult = e => {
+    let transcript = '';
+    for (let i = 0; i < e.results.length; i++) {
+      transcript += e.results[i][0].transcript;
+    }
+    currentTranscript = transcript;
+    const box = document.getElementById('transcriptBox');
+    box.textContent = transcript;
+    box.classList.add('visible');
+    document.getElementById('catCard').style.display = 'block';
+  };
+  recognition.onerror = () => { stopRecording(); };
+  recognition.onend = () => { if (isRecording) recognition.start(); };
+  recognition.start();
+  isRecording = true;
+  document.getElementById('voiceBtn').classList.add('recording');
+  document.getElementById('voiceHint').innerHTML = '<strong style="color:var(--red)">Recording...</strong> tap to stop';
+}
+
+function stopRecording() {
+  if (recognition) { recognition.onend = null; recognition.stop(); }
+  isRecording = false;
+  document.getElementById('voiceBtn').classList.remove('recording');
+  document.getElementById('voiceHint').innerHTML = '<strong>Hold to speak</strong> — tap to start/stop';
+}
+
+// CATEGORY
+function selectCat(btn) {
+  document.querySelectorAll('#catCard .cat-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  selectedCat = btn.dataset.cat;
+}
+function selectManualCat(btn) {
+  const parent = btn.closest('.card');
+  parent.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  selectedManualCat = btn.dataset.cat;
+}
+
+// SAVE TASK
+function saveTask() {
+  if (!currentTranscript.trim()) { showToast('Nothing recorded yet', true); return; }
+  addTask(currentTranscript, selectedCat);
+  currentTranscript = '';
+  document.getElementById('transcriptBox').textContent = '';
+  document.getElementById('transcriptBox').classList.remove('visible');
+  document.getElementById('catCard').style.display = 'none';
+}
+
+function saveManualTask() {
+  const val = document.getElementById('manualInput').value.trim();
+  if (!val) { showToast('Type something first', true); return; }
+  addTask(val, selectedManualCat);
+  document.getElementById('manualInput').value = '';
+}
+
+function addTask(text, category) {
+  const task = {
+    id: Date.now(),
+    text,
+    category,
+    done: false,
+    date: new Date().toISOString()
+  };
+  tasks.unshift(task);
+  saveTasks();
+  syncToNotion(task);
+  showToast('✓ Saved to your list');
+  renderTasks();
+  updateStats();
+}
+
+function saveTasks() {
+  localStorage.setItem('tony_tasks', JSON.stringify(tasks));
+}
+
+// NOTION SYNC
+async function syncToNotion(task) {
+  if (!notionKey || !notionDbId) return;
+  try {
+    await fetch('https://api.notion.com/v1/pages', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + notionKey,
+        'Content-Type': 'application/json',
+        'Notion-Version': '2022-06-28'
+      },
+      body: JSON.stringify({
+        parent: { database_id: notionDbId },
+        properties: {
+          Name: { title: [{ text: { content: task.text } }] },
+          Category: { select: { name: task.category } },
+          Done: { checkbox: false }
+        }
+      })
+    });
+  } catch (e) { console.log('Notion sync failed:', e); }
+}
+
+// RENDER TASKS
+function renderTasks() {
+  const list = document.getElementById('taskList');
+  let filtered = tasks;
+  if (currentFilter !== 'all') filtered = tasks.filter(t => t.category === currentFilter);
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>No tasks here yet.<br>Log one from the Log tab.</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(t => `
+    <div class="task-item" id="task-${t.id}">
+      <div class="task-check ${t.done ? 'done' : ''}" onclick="toggleTask(${t.id})"></div>
+      <div class="task-body">
+        <div class="task-text ${t.done ? 'done' : ''}">${escHtml(t.text)}</div>
+        <div class="task-meta">
+          <span class="tag tag-${t.category}">${catLabel(t.category)}</span>
+          <span class="task-date">${fmtDate(t.date)}</span>
+        </div>
+      </div>
+      <button class="task-delete" onclick="deleteTask(${t.id})">×</button>
+    </div>
+  `).join('');
+}
+
+function toggleTask(id) {
+  const t = tasks.find(t => t.id === id);
+  if (t) { t.done = !t.done; saveTasks(); renderTasks(); updateStats(); }
+}
+
+function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id);
+  saveTasks(); renderTasks(); updateStats();
+}
+
+function filterTasks(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTasks();
+}
+
+function updateStats() {
+  const total = tasks.length;
+  const done = tasks.filter(t => t.done).length;
+  const pending = total - done;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statDone').textContent = done;
+}
+
+// HABITS
+function checkHabitDay() {
+  const lastDay = localStorage.getItem('tony_habit_day');
+  const today = new Date().toDateString();
+  if (lastDay !== today) {
+    habits = habits.map(h => ({ ...h, done: false }));
+    localStorage.setItem('tony_habit_day', today);
+    saveHabits();
+  }
+}
+
+function renderHabits() {
+  const list = document.getElementById('habitList');
+  list.innerHTML = habits.map(h => `
+    <div class="habit-row">
+      <div>
+        <div class="habit-name">${h.emoji} ${h.name}</div>
+      </div>
+      <button class="habit-toggle ${h.done ? 'on' : ''}" onclick="toggleHabit(${h.id})"></button>
+    </div>
+  `).join('');
+  updateHabitProgress();
+}
+
+function toggleHabit(id) {
+  const h = habits.find(h => h.id === id);
+  if (h) { h.done = !h.done; saveHabits(); renderHabits(); }
+}
+
+function addHabit() {
+  const val = document.getElementById('newHabit').value.trim();
+  if (!val) return;
+  habits.push({ id: Date.now(), name: val, done: false, emoji: '⚡' });
+  saveHabits(); renderHabits();
+  document.getElementById('newHabit').value = '';
+  showToast('Habit added');
+}
+
+function saveHabits() {
+  localStorage.setItem('tony_habits', JSON.stringify(habits));
+}
+
+function updateHabitProgress() {
+  const total = habits.length;
+  const done = habits.filter(h => h.done).length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  document.getElementById('habitProgress').style.width = pct + '%';
+  document.getElementById('habitProgressText').textContent = done + ' / ' + total + ' complete';
+}
+
+// AI CHAT
+function handleChatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+}
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+
+  appendMsg(msg, 'user');
+  chatHistory.push({ role: 'user', content: msg });
+
+  const loadingEl = appendMsg('Thinking...', 'ai loading');
+
+  const taskSummary = tasks.slice(0, 20).map(t =>
+    `[${t.category.toUpperCase()}] ${t.text} — ${t.done ? 'done' : 'pending'} (${fmtDate(t.date)})`
+  ).join('\n');
+
+  const habitSummary = habits.map(h => `${h.name}: ${h.done ? '✓' : '✗'}`).join(', ');
+
+  const systemPrompt = `You are Tony's personal AI assistant. You know everything about him:
+
+IDENTITY: Tony (Anton Michael Fayez Louis). CS student Alexandria University, graduating June 2026. Egyptian, Coptic Christian. Based in Alexandria. Gym rat, does boxing/BJJ, runs by the sea daily. Reads personal dev books. YouTube channel @tonymicheal (~8K subs on AI/automation).
+
+WORK: 
+- Referrizer: Master Appointment Setter (400+ qualified appointments). Does cold calls targeting US med spas, gyms, dentists.
+- VOIS Deutschland (Vodafone): PMO Vendor Management intern under Mahmoud Hataba.
+- Movatera: His AI automation agency for US med spa owners. Offer = follow-up & rebooking system. "Respond in 60 seconds, reactivate cold clients, reduce no-shows." 14-day install. 30-day guarantee.
+- YouTube: AI/n8n automation content.
+
+GOALS: Relocate to Europe (Germany primary — Hamburg rejected, Konstanz active). Build Movatera to consistent profitability. Fund the move.
+
+PERSONALITY: Competitive, hates losing, driven by proving things to himself. Avoidance pattern when execution gets close. Engine turns on with concrete targets.
+
+TODAY'S HABITS: ${habitSummary}
+
+RECENT TASKS:
+${taskSummary || 'No tasks logged yet.'}
+
+Be direct, personal, and brief. You speak to Tony like a sharp friend who knows his whole situation. No fluff. When he asks about callbacks or tasks, reference what's in the list above. When he asks for advice, factor in Movatera, Referrizer, and Germany goals.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: chatHistory
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.find(c => c.type === 'text')?.text || 'Something went wrong.';
+    loadingEl.remove();
+    appendMsg(reply, 'ai');
+    chatHistory.push({ role: 'assistant', content: reply });
+    if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+  } catch (e) {
+    loadingEl.remove();
+    appendMsg('Connection error. Check your internet.', 'ai');
+  }
+}
+
+function appendMsg(text, cls) {
+  const div = document.createElement('div');
+  div.className = 'msg ' + cls;
+  div.textContent = text;
+  const container = document.getElementById('chatMessages');
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+// SETUP
+function saveNotionKey() {
+  notionKey = document.getElementById('notionKey').value.trim();
+  localStorage.setItem('tony_notion_key', notionKey);
+  updateNotionStatus();
+  showToast('API key saved');
+}
+function saveDbId() {
+  notionDbId = document.getElementById('notionDbId').value.trim();
+  localStorage.setItem('tony_notion_db', notionDbId);
+  showToast('Database ID saved');
+}
+function updateNotionStatus() {
+  const el = document.getElementById('notionStatus');
+  if (notionKey && notionDbId) {
+    el.className = 'status-pill connected';
+    el.innerHTML = '<div class="status-dot"></div> Connected to Notion';
+  } else {
+    el.className = 'status-pill disconnected';
+    el.innerHTML = '<div class="status-dot"></div> Not connected — follow setup guide';
+  }
+}
+
+// UTILS
+function catLabel(cat) {
+  const labels = { callback:'📞 Callback', movatera:'🚀 Movatera', vois:'💼 VOIS', personal:'🧠 Personal', gym:'💪 Gym', youtube:'🎬 YouTube' };
+  return labels[cat] || cat;
+}
+function fmtDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '') + ' show';
+  setTimeout(() => { t.className = 'toast' + (isError ? ' error' : ''); }, 2500);
+}
+</script>
+</body>
+</html>
